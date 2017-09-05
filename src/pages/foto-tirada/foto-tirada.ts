@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, LoadingController, ToastController
 // Http
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { firebaseDatabase } from '../../app/firebase.config'
 
 @IonicPage()
 @Component({
@@ -38,12 +39,11 @@ export class FotoTiradaPage {
 	 * real da api
 	 * 
 	 */
-	public url_root = "https://app-desp-apitest.herokuapp.com/index.php";
-
+	public url_root = "https://app-agua-utfpr.firebaseio.com/"
 	/**
 	 * Rota da api para deploy das informações (imagem, texto)
 	 */
-	public url_api = "/report/new";
+	public url_api = "reports/";
 
 	/**
 	 * Construtor da página. Carrega a foto tirada pela câmera
@@ -65,15 +65,17 @@ export class FotoTiradaPage {
 			});
 			loading.present();
 			console.log("Enviando report...");
-
-			// Cabeçalho HTTP para JSON
+			// Cria um cabeçalho
 			let headers = new Headers({ 'Content-Type': 'application/json' });
 			// Cria um corpo para a mensagem (JSON oom foto e texto)
 			let body = {
 	    		imagem: this.base64_image,
 	    		texto: this.texto
 	    	};
-	    	// Faz a chamada HTTP para a api
+	    	// Faz a chamada JS para a api
+			firebaseDatabase.ref('reports/').set(body);
+
+			// Chamada HTTP para a api
 			this.http.post(encodeURI(this.url_root + this.url_api),JSON.stringify(body), headers).map(res => res.json())
 			.subscribe(
 				data => {
