@@ -6,11 +6,18 @@ import { Camera } from '@ionic-native/camera';
 import { ToastController, LoadingController } from 'ionic-angular';
 // Páginas
 import { FotoTiradaPage } from '../foto-tirada/foto-tirada';
+// Firebase
+import {firebaseDatabase} from '../../app/firebase.config';
+import { Http, Headers } from '@angular/http';
+
 
 @Component({
 	selector: 'page-home',
 	templateUrl: 'home.html'
 })
+
+
+
 export class HomePage {
 
 	/**
@@ -27,7 +34,8 @@ export class HomePage {
 	 * Método construtor. Instancia NavController, Camera e ToastController para uso
 	 */
 	constructor(public navCtrl: NavController, private camera: Camera,
-		private toastCtrl: ToastController, public loadingCtrl: LoadingController) {
+		private toastCtrl: ToastController, public loadingCtrl: LoadingController,
+		public http: Http) {
 	}
 
 	/**
@@ -38,6 +46,63 @@ export class HomePage {
 	 * da foto for da galeria, ou deve ser <FALSE> quando o usuário quiser tirar
 	 * uma nova foto com sua câmera
 	 */
+	
+	testar_api(){
+		let loading = this.loadingCtrl.create({
+				content: 'Enviando...'
+			});
+		let body = {
+	    		imagem: "IMAGEM TESTE",
+	    		texto: "TEXTO TESTE"
+			};
+					// Cabeçalho HTTP para JSON
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		this.http.post(encodeURI("https://app-agua-utfpr.firebaseio.com/reports/"),JSON.stringify(body)).map(res => res.json())
+			.subscribe(
+				data => {
+					// Termina mensagem de carregamento
+					loading.dismiss();
+					// Mostra resposta no console
+		            let resposta = data.resultado;
+		            console.log(resposta);
+		            // Apresenta resposta de sucesso ao usuário
+	            	let toast = this.toastCtrl.create({
+						message: `Report enviado!`,
+						duration: 3000,
+						position: 'top'
+					});
+					// Quando toast termina seu tempo, a navegação volta para home
+					toast.onDidDismiss(() => {
+						this.navCtrl.pop();
+					});
+					toast.present();
+	        	},
+	        	err => {
+	        		// Termina mensagem de carregamento
+					loading.dismiss();
+					// Resultado no console
+					console.log("Erro ao tentar enviar report!");
+					// Apresenta resposta de falha ao usuário
+					let toast = this.toastCtrl.create({
+						message: `Erro ao tentar enviar report!`,
+						duration: 3000,
+						position: 'top'
+					});
+					// Quando toast termina seu tempo, a navegação volta para home
+					toast.onDidDismiss(() => {
+						this.navCtrl.pop();
+					});
+					toast.present();
+				}
+        	);
+
+		/*firebaseDatabase.ref('reports/' +1).set({
+			imagem: "aaaaaaaaaaaaaaaaaaaaaaa",
+			texto: "TESTE INICIAL"
+
+		});*/
+	}
+
 	capturar_foto(galeria) {
 		// Apresenta mensagem de carregamento
 		let loading = this.loadingCtrl.create({
@@ -46,6 +111,7 @@ export class HomePage {
 		loading.present();
 		// Fonte da fonto (local de onde se tira a foto: câmera ou galeria)
 		let fonte_foto;
+		
 		if(galeria === false) {
 			// Caso opte por tirar uma foto, a fonte passa a ser a câmera
 			fonte_foto = this.camera.PictureSourceType.CAMERA;
