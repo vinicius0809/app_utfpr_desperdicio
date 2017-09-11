@@ -17,7 +17,6 @@ import { Http, Headers } from '@angular/http';
 })
 
 
-
 export class HomePage {
 
 	/**
@@ -48,15 +47,20 @@ export class HomePage {
 	 */
 	
 	testar_api(){
+		
 		let loading = this.loadingCtrl.create({
 				content: 'Enviando...'
 			});
+		var now = new Date;
 		let body = {
-	    		imagem: "IMAGEM TESTE",
-	    		texto: "TEXTO TESTE"
+	    		imagem: 'IMAGEM TESTE',
+				texto: 'TEXTO TESTE22222',
+				resolvido: false,
+				data: now.getDate()+"/"+(1+now.getMonth())+"/"+now.getFullYear()
+				
 			};
 					// Cabeçalho HTTP para JSON
-		let headers = new Headers({ 'Content-Type': 'application/json' });
+		/*let headers = new Headers({ 'Content-Type': 'application/json' });
 		this.http.post(encodeURI("https://app-agua-utfpr.firebaseio.com/reports/"),JSON.stringify(body)).map(res => res.json())
 			.subscribe(
 				data => {
@@ -94,13 +98,9 @@ export class HomePage {
 					});
 					toast.present();
 				}
-        	);
-
-		/*firebaseDatabase.ref('reports/' +1).set({
-			imagem: "aaaaaaaaaaaaaaaaaaaaaaa",
-			texto: "TESTE INICIAL"
-
-		});*/
+			);*/
+		var key = firebaseDatabase.ref().child('reports').push().key;
+		firebaseDatabase.ref('reports/'+key).set(body);
 	}
 
 	capturar_foto(galeria) {
