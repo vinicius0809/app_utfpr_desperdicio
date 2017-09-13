@@ -4,6 +4,7 @@ import { IonicPage, NavController, NavParams, LoadingController, ToastController
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { firebaseDatabase } from '../../app/firebase.config'
+var storageRef = firebase.storage().ref();
 
 @IonicPage()
 @Component({
@@ -43,7 +44,7 @@ export class FotoTiradaPage {
 	/**
 	 * Rota da api para deploy das informações (imagem, texto)
 	 */
-	public url_api = "reports/";
+	public url_api = "reports/cp/";
 
 	/**
 	 * Construtor da página. Carrega a foto tirada pela câmera
@@ -67,13 +68,25 @@ export class FotoTiradaPage {
 			console.log("Enviando report...");
 			// Cria um cabeçalho
 			let headers = new Headers({ 'Content-Type': 'application/json' });
+			// Chave unica do report
+			var key = firebaseDatabase.ref().child('cp').push().key;
+			// Firebase storage
+			var storage_cp = storageRef.child(key+'.jpg');
+			storage_cp.putString(this.base64_image, 'base64').then(function(snapshot) {
+  					console.log('Uploaded a base64 string!');
+			});
+	    	// Faz a chamada JS para a api
+			var now = new Date;
 			// Cria um corpo para a mensagem (JSON oom foto e texto)
 			let body = {
 	    		imagem: this.base64_image,
-	    		texto: this.texto
-	    	};
-	    	// Faz a chamada JS para a api
-			firebaseDatabase.ref('reports/').set(body);
+				texto: this.texto,
+				resolvido: false,
+				data: now.getDate()+"/"+(1+now.getMonth())+"/"+now.getFullYear()	
+			};
+			// Faz o commit no banco de dados
+			var key = firebaseDatabase.ref().child('cp').push().key;
+			firebaseDatabase.ref( this.url_api + key ).set(body);
 
 			// Chamada HTTP para a api
 			this.http.post(encodeURI(this.url_root + this.url_api),JSON.stringify(body), headers).map(res => res.json())
