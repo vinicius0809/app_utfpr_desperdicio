@@ -56,51 +56,10 @@ export class HomePage {
 	    		imagem: 'IMAGEM TESTE',
 				texto: 'TEXTO TESTE22222',
 				resolvido: false,
-				data: now.getDate()+"/"+(1+now.getMonth())+"/"+now.getFullYear()
-				
+				data: now.getDate()+"/"+(1+now.getMonth())+"/"+now.getFullYear()	
 			};
-					// Cabeçalho HTTP para JSON
-		/*let headers = new Headers({ 'Content-Type': 'application/json' });
-		this.http.post(encodeURI("https://app-agua-utfpr.firebaseio.com/reports/"),JSON.stringify(body)).map(res => res.json())
-			.subscribe(
-				data => {
-					// Termina mensagem de carregamento
-					loading.dismiss();
-					// Mostra resposta no console
-		            let resposta = data.resultado;
-		            console.log(resposta);
-		            // Apresenta resposta de sucesso ao usuário
-	            	let toast = this.toastCtrl.create({
-						message: `Report enviado!`,
-						duration: 3000,
-						position: 'top'
-					});
-					// Quando toast termina seu tempo, a navegação volta para home
-					toast.onDidDismiss(() => {
-						this.navCtrl.pop();
-					});
-					toast.present();
-	        	},
-	        	err => {
-	        		// Termina mensagem de carregamento
-					loading.dismiss();
-					// Resultado no console
-					console.log("Erro ao tentar enviar report!");
-					// Apresenta resposta de falha ao usuário
-					let toast = this.toastCtrl.create({
-						message: `Erro ao tentar enviar report!`,
-						duration: 3000,
-						position: 'top'
-					});
-					// Quando toast termina seu tempo, a navegação volta para home
-					toast.onDidDismiss(() => {
-						this.navCtrl.pop();
-					});
-					toast.present();
-				}
-			);*/
-		var key = firebaseDatabase.ref().child('reports').push().key;
-		firebaseDatabase.ref('reports/'+key).set(body);
+		var key = firebaseDatabase.ref().child('cp').push().key;
+		firebaseDatabase.ref('reports/cp/'+key).set(body);
 	}
 
 	capturar_foto(galeria) {
