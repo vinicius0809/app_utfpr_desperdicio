@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "appDesperdicio",
   "app_id": "",
@@ -12,3 +13,19 @@
     }
   ]
 }
+=======
+{
+  "name": "appDesperdicio",
+  "app_id": "",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  },
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "https://app-agua-utfpr.firebaseio.com"
+    }
+  ]
+}
+>>>>>>> 447eadf004042aee8075aa8149203d061072773c
